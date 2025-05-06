@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:video_player/video_player.dart';
@@ -27,6 +28,7 @@ class VideoPlayerHandler extends BaseAudioHandler with SeekHandler {
 
   VideoPlayerController? _player;
   final _playerController = BehaviorSubject<VideoPlayerController?>();
+  AudioSession? _session;
 
   Stream<VideoPlayerController?> get playerController =>
       _playerController.stream;
@@ -46,6 +48,8 @@ class VideoPlayerHandler extends BaseAudioHandler with SeekHandler {
     _player!.addListener(_broadcastState);
     mediaItem.add(_item.copyWith(duration: _player!.value.duration));
     _broadcastState();
+    _session = await AudioSession.instance;
+    await _session?.configure(AudioSessionConfiguration.speech());
   }
 
   void _broadcastState() {
@@ -72,19 +76,26 @@ class VideoPlayerHandler extends BaseAudioHandler with SeekHandler {
   }
 
   @override
-  Future<void> play() => _player?.play() ?? Future.value();
+  Future<void> play() async {
+    if (await _session?.setActive(true) ?? false) {
+      return _player?.play() ?? Future.value();
+    }
+  }
 
   @override
-  Future<void> pause() => _player?.pause() ?? Future.value();
+  Future<void> pause() async {
+    await _player?.pause();
+    await _session?.setActive(false);
+  }
 
   @override
-  Future<void> seek(Duration position) =>
-      _player?.seekTo(position) ?? Future.value();
+  Future<void> seek(Duration position) async => _player?.seekTo(position);
 
   @override
   Future<void> stop() async {
     await _player?.pause();
     await _player?.seekTo(Duration.zero);
+    await _session?.setActive(false);
   }
 
   @override

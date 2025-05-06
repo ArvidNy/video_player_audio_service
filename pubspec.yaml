@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   audio_service: ^0.18.18
-  audio_session: ^0.1.18
+  audio_session: ^0.2.1
   video_player:
     git:
       ref: video_player_background_test

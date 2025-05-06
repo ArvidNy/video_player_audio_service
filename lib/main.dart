@@ -18,7 +18,6 @@ Future<void> main() async {
   runApp(const MainScreen());
 }
 
-
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 
