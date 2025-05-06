@@ -1,0 +1,27 @@
+name: video_player_audio_service
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  audio_service: ^0.18.18
+  audio_session: ^0.1.18
+  video_player:
+    git:
+      ref: video_player_background_test
+      url: https://github.com/ArvidNy/packages.git
+      path: packages/video_player/video_player
+  rxdart: ^0.28.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
